@@ -1,0 +1,207 @@
+/* ==========================
+   Google Font
+========================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* ==========================
+   Body
+========================== */
+
+body{
+
+    background:#f4f7fc;
+
+}
+
+/* ==========================
+   Main Card
+========================== */
+
+.card{
+
+    border:none;
+    border-radius:15px;
+
+}
+
+/* ==========================
+   Heading
+========================== */
+
+h1{
+
+    color:#0d6efd;
+    font-weight:700;
+
+}
+
+/* ==========================
+   Paragraph
+========================== */
+
+p{
+
+    font-size:16px;
+
+}
+
+/* ==========================
+   File Input
+========================== */
+
+input[type=file]{
+
+    padding:12px;
+
+}
+
+/* ==========================
+   Button
+========================== */
+
+.btn-primary{
+
+    padding:12px;
+    font-size:18px;
+    font-weight:600;
+
+}
+
+/* ==========================
+   Hover Effect
+========================== */
+
+.btn-primary:hover{
+
+    transform:scale(1.02);
+    transition:.3s;
+
+}
+
+/* ==========================
+   Flashcards
+========================== */
+
+.flashcards-container{
+
+    margin-top:20px;
+
+}
+
+.flashcard{
+
+    background:#ffffff;
+    border-left:6px solid #0d6efd;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.flashcard:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.flashcard-title{
+
+    font-size:22px;
+    font-weight:700;
+    color:#0d6efd;
+    margin-bottom:15px;
+
+}
+
+.question{
+
+    font-size:18px;
+    font-weight:600;
+    color:#212529;
+    margin-bottom:12px;
+
+}
+
+.answer{
+
+    background:#eef8ee;
+    border-left:5px solid #198754;
+    padding:12px;
+    border-radius:10px;
+    font-size:17px;
+    line-height:1.8;
+
+}
+
+/* ===========================
+   PROFESSIONAL DARK MODE
+=========================== */
+
+body.dark-mode{
+    background:#121212 !important;
+    color:#ffffff !important;
+}
+
+body.dark-mode .container{
+    background:transparent !important;
+}
+
+body.dark-mode .card{
+    background:#1e1e1e !important;
+    color:#ffffff !important;
+    border:1px solid #444 !important;
+}
+
+body.dark-mode .alert{
+    background:#2b2b2b !important;
+    color:#ffffff !important;
+    border:none !important;
+}
+
+body.dark-mode #summary-box{
+    background:#2b2b2b !important;
+    color:#ffffff !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea{
+    background:#2b2b2b !important;
+    color:#ffffff !important;
+    border:1px solid #666 !important;
+}
+
+body.dark-mode option{
+    background:#2b2b2b;
+    color:white;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode p,
+body.dark-mode label,
+body.dark-mode small{
+    color:#ffffff !important;
+}
+
+body.dark-mode .text-muted{
+    color:#cccccc !important;
+}
+
+body.dark-mode hr{
+    border-color:#555 !important;
+}

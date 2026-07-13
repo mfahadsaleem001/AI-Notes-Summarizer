@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Notes Summarizer</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+#loading-screen{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:100%;
+
+    background:rgba(0,0,0,0.8);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+.loading-content{
+
+    text-align:center;
+
+}
+
+</style>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-8">
+
+                <div class="card shadow p-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <h1 class="m-0">
+
+                        📚 AI Notes Summarizer
+
+                        </h1>
+
+                    </div>
+
+                    <p class="text-center text-muted">
+                        Upload your PDF, DOCX or TXT file and let AI summarize it.
+                    </p>
+
+                    <form method="POST"
+      enctype="multipart/form-data"
+      onsubmit="showLoading()">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Choose Notes File
+                            </label>
+
+                            <input
+                                type="file"
+                                class="form-control"
+                                name="notes"
+                                accept=".pdf,.docx,.txt"
+                                required>
+
+                        </div>
+                        <div class="mb-4">
+
+    <label class="form-label">
+
+        <strong>🧠 Choose Summary Mode</strong>
+
+    </label>
+
+    <select
+        class="form-select"
+        name="summary_mode"
+        required>
+
+        <option value="short">
+
+            📌 Short Summary (5-8 Points)
+
+        </option>
+
+        <option value="medium" selected>
+
+            📖 Medium Summary
+
+        </option>
+
+        <option value="detailed">
+
+            📚 Detailed Summary
+
+        </option>
+
+        <option value="exam">
+
+            🔥 Exam Revision
+
+        </option>
+
+    </select>
+    <div class="mt-3">
+
+    <label class="form-label">
+
+        Number of Quiz Questions
+
+    </label>
+
+    <select
+        name="quiz_count"
+        class="form-select">
+
+        <option value="05">
+
+            05 Questions
+
+        </option>
+
+        <option value="10">
+
+            10 Questions
+
+        </option>
+
+        <option value="20">
+
+            20 Questions
+
+        </option>
+
+        <option value="30">
+
+            30 Questions
+
+        </option>
+
+        <option value="40">
+
+            40 Questions
+
+        </option>
+
+        <option value="50">
+
+            50 Questions
+
+        </option>
+
+    </select>
+
+</div>
+
+    <small class="text-muted">
+
+        Choose how detailed you want the AI summary.
+
+    </small>
+
+</div>
+
+                        <div class="d-grid">
+
+                            <button class="btn btn-primary btn-lg">
+                                Summarize Notes
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="loading-screen">
+
+    <div class="loading-content">
+
+        <div class="spinner-border text-light" style="width:4rem;height:4rem;"></div>
+
+        <h3 class="mt-4 text-white" id="loadingTitle">
+
+    📂 Uploading File...
+
+</h3>
+
+<p class="text-white" id="loadingText">
+
+    Please wait...
+
+</p>
+
+<div class="progress mt-4 shadow-sm"
+    style="height:30px;border-radius:20px;">
+
+    <div
+        id="progressBar"
+        class="progress-bar progress-bar-striped progress-bar-animated"
+        role="progressbar"
+        style="width:0%;font-weight:bold;font-size:15px;"></div>
+</div>
+
+</div>
+
+    </div>
+
+</div>
+
+<script>
+
+function showLoading(){
+
+    document.getElementById("loading-screen").style.display="flex";
+
+    let progress = 0;
+
+    let bar = document.getElementById("progressBar");
+
+    let title = document.getElementById("loadingTitle");
+
+    let text = document.getElementById("loadingText");
+
+    let interval = setInterval(function(){
+
+        progress += 5;
+
+        if(progress <= 25){
+
+            title.innerHTML = "📂 Uploading File...";
+            text.innerHTML = "Uploading your notes...";
+
+        }
+
+        else if(progress <= 50){
+
+            title.innerHTML = "📖 Reading Document...";
+            text.innerHTML = "Extracting text from your file...";
+
+        }
+
+        else if(progress <= 75){
+
+            title.innerHTML = "🧠 Generating Summary...";
+            text.innerHTML = "AI is understanding your notes...";
+
+        }
+
+        else{
+
+            title.innerHTML = "📝 Creating Quiz...";
+            text.innerHTML = "Preparing exam questions...";
+
+        }
+
+        if(progress > 95){
+
+            progress = 95;
+
+        }
+
+        bar.style.width = progress + "%";
+        bar.textContent = progress + "%";
+
+    },500);
+
+}
+
+</script>
+</body>
+</html>

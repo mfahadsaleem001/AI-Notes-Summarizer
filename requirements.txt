@@ -1,0 +1,5 @@
+Flask
+google-generativeai
+PyPDF2
+python-docx
+reportlab

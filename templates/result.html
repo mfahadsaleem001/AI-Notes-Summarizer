@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Notes Assistant</title>
+
+    <!-- Bootstrap -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+        rel="stylesheet"
+    >
+
+    <!-- Google Font -->
+    <link 
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" 
+        rel="stylesheet"
+    >
+
+    <!-- Custom CSS -->
+    <link 
+        rel="stylesheet" 
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        body {
+            background: #f4f7fb;
+        }
+
+
+        .main-card {
+
+            border-radius: 20px;
+            border: none;
+
+        }
+
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+
+            font-family: "Merriweather", serif;
+            font-weight: 700;
+
+        }
+
+
+        .summary-box {
+
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            font-family:"Times New Roman", serif;
+            font-size:19px;
+            line-height:1.9;
+            text-align:justify;
+
+        }
+
+
+        .btn {
+
+            border-radius:10px;
+
+        }
+
+
+        .quiz-option {
+
+            width:100%;
+            text-align:left;
+            padding:15px;
+            margin-bottom:12px;
+
+        }
+
+
+        .quiz-card {
+
+            border-radius:20px;
+
+        }
+
+
+        .correct {
+
+            background:#198754 !important;
+            color:white !important;
+
+        }
+
+
+        .wrong {
+
+            background:#dc3545 !important;
+            color:white !important;
+
+        }
+
+
+        .answer-disabled {
+
+            pointer-events:none;
+
+        }
+
+
+        .score-box {
+
+            font-size:28px;
+            font-weight:bold;
+
+        }
+
+
+    </style>
+
+
+</head>
+
+
+<body>
+
+
+<div class="container mt-5 mb-5">
+
+
+<div class="card shadow-lg p-4 main-card">
+
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center">
+
+
+        <h1 class="text-primary">
+
+            🤖 AI Notes Assistant
+
+        </h1>
+
+
+    </div>
+
+
+    <hr>
+
+
+    <!-- File Information -->
+
+
+    <h4>
+
+        📂 Uploaded File
+
+    </h4>
+
+
+    <div class="alert alert-secondary">
+
+        {{ filename }}
+
+    </div>
+
+
+
+    <!-- Download Buttons -->
+
+
+    <div class="row g-3">
+
+
+        <div class="col-md-6">
+
+
+            <a 
+                href="/download/pdf" 
+                class="btn btn-danger btn-lg w-100"
+            >
+
+                📄 Download PDF
+
+            </a>
+
+
+        </div>
+
+
+
+        <div class="col-md-6">
+
+
+            <a 
+                href="/download/docx" 
+                class="btn btn-primary btn-lg w-100"
+            >
+
+                📝 Download DOCX
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <hr>
+
+
+
+    <!-- SUMMARY SECTION -->
+
+
+    <div id="summary-section">
+
+
+        <div class="d-flex justify-content-between align-items-center">
+
+
+            <div>
+
+
+                <h3>
+
+                    📝 AI Generated Summary
+
+                </h3>
+
+
+                <p class="text-muted">
+
+                    🧠 Summary Mode:
+
+                    <b>
+
+                        {{ summary_mode }}
+
+                    </b>
+
+
+                </p>
+
+
+            </div>
+
+
+
+            <button 
+                class="btn btn-success"
+                onclick="copySummary()"
+            >
+
+                📋 Copy Summary
+
+            </button>
+
+
+        </div>
+
+
+
+        <div 
+            id="summary-box"
+            class="summary-box shadow-sm"
+        >
+
+            {{ summary }}
+
+
+        </div>
+
+
+
+        <div class="text-center mt-4">
+
+
+            <button 
+                id="startQuizBtn"
+                class="btn btn-warning btn-lg me-2"
+            >
+
+                🎯 Start Quiz
+
+            </button>
+
+
+
+            <a 
+                href="{{ url_for('home') }}"
+                class="btn btn-primary btn-lg"
+            >
+
+                📂 Upload Another File
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+    <!-- QUIZ SECTION -->
+
+    <div 
+        id="quiz-section"
+        style="display:none;"
+    >
+
+
+        <h2 class="text-center mb-4">
+
+            🧠 Quiz Mode
+
+        </h2>
+
+
+
+        <div class="card shadow-sm p-4 quiz-card">
+
+
+
+            <div 
+                id="question-number"
+                class="fw-bold text-primary mb-3"
+            >
+
+            </div>
+
+
+
+
+            <h4 id="question-text">
+
+            </h4>
+
+
+
+
+            <div 
+                id="options"
+                class="mt-4"
+            >
+
+            </div>
+
+
+
+
+            <div 
+                id="answer-result"
+                class="fw-bold mt-3"
+            >
+
+            </div>
+
+
+
+
+
+            <div class="d-flex justify-content-between mt-4">
+
+
+                <button 
+                    id="prevBtn"
+                    class="btn btn-secondary"
+                >
+
+                    ← Previous
+
+                </button>
+
+
+
+
+                <button 
+                    id="nextBtn"
+                    class="btn btn-primary"
+                >
+
+                    Next →
+
+                </button>
+
+
+
+
+                <button 
+                    id="finishBtn"
+                    class="btn btn-success"
+                    style="display:none;"
+                >
+
+                    Submit Quiz ✅
+
+                </button>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+<script>
+
+
+/* ================================
+        SUMMARY FUNCTIONS
+================================ */
+
+
+
+function copySummary(){
+
+
+    let summary = document
+        .getElementById("summary-box")
+        .innerText;
+
+
+
+    navigator.clipboard
+    .writeText(summary)
+    .then(()=>{
+
+
+        alert("Summary copied successfully");
+
+
+    });
+
+
+}
+
+
+
+
+
+function formatSummary(){
+
+    let box = document.getElementById("summary-box");
+
+    let text = box.innerHTML;
+
+    text = text
+    .replace(/\*\*/g,"")
+    .replace(/###/g,"")
+    .replace(/##/g,"")
+    .replace(/#/g,"");
+
+
+    box.innerHTML = text;
+
+
+    box.innerHTML = box.innerHTML.replace(
+    /INTRODUCTION|KEY POINTS|CONCLUSION|IMPORTANT TOPICS|IMPORTANT DEFINITIONS|KEY CONCEPTS|QUICK REVISION NOTES|EXAM TIPS/g,
+    function(match){
+
+        return "<h3 class='mt-4 mb-2'><strong>"+match+"</strong></h3>";
+
+    });
+
+}
+
+
+
+formatSummary();
+
+
+
+
+
+/* ================================
+        QUIZ DATA
+================================ */
+
+
+const quizData = {{ quiz_data | tojson | safe }};
+
+
+
+let currentQuestion = 0;
+
+
+let userAnswers = [];
+
+
+let answeredQuestions = [];
+
+
+
+let score = 0;
+
+
+
+
+
+/* ================================
+        LOAD QUESTION
+================================ */
+
+
+function loadQuestion(){
+
+
+
+    let question = quizData[currentQuestion];
+
+
+
+    document
+    .getElementById("question-number")
+    .innerHTML =
+
+    `Question ${currentQuestion + 1} / ${quizData.length}`;
+
+
+
+
+
+    document
+    .getElementById("question-text")
+    .innerHTML =
+
+    "❓ " + question.question;
+
+
+
+
+
+    let optionsHTML = "";
+
+
+
+    question.options.forEach(option=>{
+
+
+        optionsHTML += `
+
+
+        <button
+
+        class="btn btn-light border quiz-option"
+
+        data-option="${option}"
+
+        onclick="selectAnswer(this,'${option.replace(/'/g,"\\'")}')"
+
+        >
+
+        ${option}
+
+        </button>
+
+
+        `;
+
+
+    });
+
+
+
+
+    document
+    .getElementById("options")
+    .innerHTML = optionsHTML;
+
+
+
+
+    restoreAnswer();
+
+
+
+
+    document
+    .getElementById("answer-result")
+    .innerHTML = "";
+
+
+
+
+
+    document
+    .getElementById("prevBtn")
+    .disabled = currentQuestion === 0;
+
+
+
+
+
+    if(currentQuestion === quizData.length-1){
+
+
+        document
+        .getElementById("nextBtn")
+        .style.display="none";
+
+
+
+        document
+        .getElementById("finishBtn")
+        .style.display="inline-block";
+
+
+    }
+
+    else{
+
+
+        document
+        .getElementById("nextBtn")
+        .style.display="inline-block";
+
+
+
+        document
+        .getElementById("finishBtn")
+        .style.display="none";
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+/* ================================
+        SELECT ANSWER
+================================ */
+
+
+function selectAnswer(button,answer){
+
+
+
+    if(answeredQuestions[currentQuestion]){
+
+        return;
+
+    }
+
+
+
+
+    answeredQuestions[currentQuestion]=true;
+
+
+
+    userAnswers[currentQuestion]=answer;
+
+
+
+    let question = quizData[currentQuestion];
+
+
+
+    document
+    .querySelectorAll(".quiz-option")
+    .forEach(btn=>{
+
+
+        btn.disabled=true;
+
+
+    });
+
+
+
+
+    if(answer === question.answer){
+
+
+
+        score++;
+
+
+
+        button.classList.remove("btn-light");
+
+        button.classList.add("correct");
+
+
+
+        document
+        .getElementById("answer-result")
+        .innerHTML =
+
+        "✅ Correct Answer";
+
+
+
+    }
+
+
+    else{
+
+
+
+        button.classList.remove("btn-light");
+
+        button.classList.add("wrong");
+
+
+
+        document
+        .getElementById("answer-result")
+        .innerHTML =
+
+        "❌ Wrong Answer <br> Correct Answer: "
+        + question.answer;
+
+
+
+
+
+        document
+        .querySelectorAll(".quiz-option")
+        .forEach(btn=>{
+
+
+            if(btn.dataset.option === question.answer){
+
+
+                btn.classList.remove("btn-light");
+
+                btn.classList.add("correct");
+
+
+            }
+
+
+
+        });
+
+
+
+
+
+    }
+
+
+
+}
+    
+/* ================================
+        RESTORE ANSWER
+================================ */
+
+
+function restoreAnswer(){
+
+
+    if(!answeredQuestions[currentQuestion]){
+
+        return;
+
+    }
+
+
+
+    let selected = userAnswers[currentQuestion];
+
+
+    let correct = quizData[currentQuestion].answer;
+
+
+
+    document
+    .querySelectorAll(".quiz-option")
+    .forEach(btn=>{
+
+
+        btn.disabled=true;
+
+
+
+        if(btn.dataset.option === correct){
+
+
+            btn.classList.remove("btn-light");
+
+            btn.classList.add("correct");
+
+
+        }
+
+
+
+
+        if(
+            btn.dataset.option === selected
+            &&
+            selected !== correct
+        ){
+
+
+            btn.classList.remove("btn-light");
+
+            btn.classList.add("wrong");
+
+
+        }
+
+
+
+    });
+
+
+
+}
+
+
+
+
+/* ================================
+        NAVIGATION
+================================ */
+
+
+
+document
+.getElementById("prevBtn")
+.onclick=function(){
+
+
+
+    if(currentQuestion > 0){
+
+
+        currentQuestion--;
+
+        loadQuestion();
+
+
+    }
+
+
+};
+
+
+
+
+
+
+document
+.getElementById("nextBtn")
+.onclick=function(){
+
+
+
+    if(currentQuestion < quizData.length-1){
+
+
+        currentQuestion++;
+
+        loadQuestion();
+
+
+    }
+
+
+};
+
+
+
+
+
+
+/* ================================
+        QUIZ FINISH
+================================ */
+
+
+
+document
+.getElementById("finishBtn")
+.onclick=function(){
+
+
+
+    let reviewHTML="";
+
+
+
+
+    quizData.forEach((question,index)=>{
+
+
+        if(
+            userAnswers[index] !== question.answer
+        ){
+
+
+            reviewHTML += `
+
+
+
+            <div class="card border-danger p-3 mt-3">
+
+
+                <h5>
+
+                    ❌ Question ${index+1}
+
+                </h5>
+
+
+                <p>
+
+                    <b>
+
+                    ${question.question}
+
+                    </b>
+
+                </p>
+
+
+
+                <p class="text-danger">
+
+                    <b>Your Answer:</b><br>
+
+                    ${
+                    userAnswers[index]
+                    ||
+                    "Not Answered"
+                    }
+
+                </p>
+
+
+
+
+                <p class="text-success">
+
+                    <b>Correct Answer:</b><br>
+
+                    ${question.answer}
+
+
+                </p>
+
+
+
+            </div>
+
+
+
+            `;
+
+
+
+        }
+
+
+
+    });
+
+
+
+
+
+
+    if(reviewHTML===""){
+
+
+        reviewHTML = `
+
+
+        <div class="alert alert-success">
+
+
+            🎉 Perfect Score!
+            No wrong answers.
+
+
+        </div>
+
+
+        `;
+
+
+    }
+
+
+
+
+
+
+    document
+    .getElementById("quiz-section")
+    .innerHTML = `
+
+
+
+    <div class="text-center">
+
+
+        <h2>
+
+            🎉 Quiz Completed
+
+        </h2>
+
+
+
+
+        <div class="score-box mt-3">
+
+
+            Score:
+            ${score}
+            /
+            ${quizData.length}
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+    <hr>
+
+
+
+    <h3>
+
+
+        ❌ Wrong Answers Review
+
+
+    </h3>
+
+
+
+    ${reviewHTML}
+
+
+
+
+
+    <div class="text-center mt-4">
+
+
+        <a
+
+        href="{{ url_for('home') }}"
+
+        class="btn btn-primary btn-lg"
+
+        >
+
+            📂 Upload Another File
+
+
+        </a>
+
+
+
+    </div>
+
+
+
+    `;
+
+
+
+
+};
+
+
+
+
+
+
+
+/* ================================
+        START QUIZ
+================================ */
+
+
+document
+.getElementById("startQuizBtn")
+.onclick=function(){
+
+
+
+    document
+    .getElementById("summary-section")
+    .style.display="none";
+
+
+
+    document
+    .getElementById("quiz-section")
+    .style.display="block";
+
+
+
+    loadQuestion();
+
+
+
+};
+</script>
+</body>
+</html>
