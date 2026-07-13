@@ -1,0 +1,20 @@
+# API Keys / Secrets
+models/config.py
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Uploaded files
+uploads/
+
+# Generated exports
+exports/
+
+# Virtual Environment
+venv/
+env/
+
+# IDE files
+.vscode/
