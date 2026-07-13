@@ -1,5 +1,15 @@
 Flask
+Werkzeug
 google-generativeai
-PyPDF2
 python-docx
+PyPDF2
 reportlab
+Flask
+Werkzeug
+google-generativeai
+python-docx
+PyPDF2
+reportlab
+pandas
+requests
+beautifulsoup4
