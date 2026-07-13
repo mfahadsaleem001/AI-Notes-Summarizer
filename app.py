@@ -79,13 +79,37 @@ def home():
             summary_mode = request.form.get("summary_mode")
             quiz_count = int(request.form.get("quiz_count", 5))
 
-            summary = summarize_text(
-                text,
-                summary_mode
-            )
+            try:
 
-            quiz = generate_quiz(text, total_questions=quiz_count)
-            quiz_data = parse_quiz(quiz)
+                summary = summarize_text(
+                    text,
+                    summary_mode
+                )
+
+                quiz = generate_quiz(
+                text,
+                total_questions=quiz_count
+    )
+
+                quiz_data = parse_quiz(quiz)
+
+            except Exception as e:
+
+                error = str(e)
+
+                if "RESOURCE_EXHAUSTED" in error or "429" in error:
+
+                    return render_template(
+                        "error.html",
+                        title="Daily AI Limit Reached",
+                        message="The AI service has reached its free daily request limit. Please try again later or use another API key."
+                    )
+
+                return render_template(
+                    "error.html",
+                    title="Unexpected Error",
+                    message=error
+                )
 
             latest_summary = summary
             latest_quiz = quiz
